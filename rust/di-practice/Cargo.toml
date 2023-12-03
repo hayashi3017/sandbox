@@ -1,0 +1,15 @@
+[workspace]
+members = [
+  "common",
+  "constructor-di",
+  "dynamic-constructor-di",
+  "static-constructor-di",
+  "cake-pattern-di",
+]
+resolver = "2"
+
+[workspace.dependencies]
+anyhow = "1"
+actix-web = "4"
+serde = "1.0.152"
+serde_derive = "1.0.152"

@@ -1,0 +1,8 @@
+[workspace]
+members = ["structured"]
+resolver = "2"
+
+[workspace.dependencies]
+sled = "0.34.7"
+byteorder = "1.4.3"
+zerocopy = "0.7.3"

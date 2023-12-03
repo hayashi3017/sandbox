@@ -1,0 +1,9 @@
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[workspace]
+members = ["async-await", "my-redis", "spawning", "channels_client"]
+
+[workspace.dependencies]
+tokio = { version = "1", features = ["full"] }
+mini-redis = "0.4"
+bytes = "1"
