@@ -25,3 +25,20 @@ pnpm create next-app --example with-playwright with-playwright-app
 ```
 
 Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
+
+# やったこと
+
+## 準備
+
+```bash
+# playwrightを動かすのに必要、ヘッドレスブラウザと思われる
+npx playwright install
+# hostにライブラリ追加した、playwrightに必要らしい
+sudo npx playwright install-deps
+```
+
+## 今後必要
+
+
+[Storybookを書くだけでリグレッションテストが 実行される世界へようこそ - Speaker Deck](https://speakerdeck.com/kubotak/storybookwoshu-kudakederiguretusiyontesutoga-shi-xing-sarerushi-jie-heyoukoso?slide=33)
+[Continuous Integration | Playwright](https://playwright.dev/docs/ci)
