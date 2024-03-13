@@ -37,8 +37,18 @@ npx playwright install
 sudo npx playwright install-deps
 ```
 
+## storybook
+
+[Install Storybook • Storybook docs](https://storybook.js.org/docs/get-started/install)
+```bash
+npx storybook@latest init
+```
+
+
 ## 今後必要
 
 
 [Storybookを書くだけでリグレッションテストが 実行される世界へようこそ - Speaker Deck](https://speakerdeck.com/kubotak/storybookwoshu-kudakederiguretusiyontesutoga-shi-xing-sarerushi-jie-heyoukoso?slide=33)
 [Continuous Integration | Playwright](https://playwright.dev/docs/ci)
+
+

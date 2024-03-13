@@ -4,7 +4,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "next": "latest",
@@ -12,9 +14,19 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@chromatic-com/storybook": "^1.2.18",
     "@playwright/test": "^1.40.1",
+    "@storybook/addon-essentials": "^8.0.0",
+    "@storybook/addon-interactions": "^8.0.0",
+    "@storybook/addon-links": "^8.0.0",
+    "@storybook/addon-onboarding": "^8.0.0",
+    "@storybook/blocks": "^8.0.0",
+    "@storybook/nextjs": "^8.0.0",
+    "@storybook/react": "^8.0.0",
+    "@storybook/test": "^8.0.0",
     "@types/node": "20.10.4",
     "@types/react": "18.2.45",
+    "storybook": "^8.0.0",
     "typescript": "5.3.3"
   }
 }
