@@ -38,17 +38,8 @@ sudo npx playwright install-deps
 ```
 
 ## nginx(docker)
-
-```bash
-# copy config
-docker run --rm --entrypoint=cat nginx /etc/nginx/nginx.conf > ./nginx.conf
-# build
-docker build -t test-nginx .
-# start
-docker run --name my-test-nginx -p 8080:80 -d test-nginx
-# reuse container
-docker start my-test-nginx
-```
+[nginx - Official Image | Docker Hub](https://hub.docker.com/_/nginx)
+[Overview | Docker Docs](https://docs.docker.com/compose/compose-file/)
 
 ## storybook
 
@@ -59,10 +50,10 @@ npx storybook@latest init
 
 Storybookをnginxで配信して、playwrightでVRTする
 ```bash
-# npx story build
+# npx story build. you need this everytime in changing story file.
 npm run build-storybook
 # start server
-docker start my-test-nginx
+docker compose up -d
 # npx playwright test (storybook spec file)
 npm run test:e2e story.spec.ts
 ```
