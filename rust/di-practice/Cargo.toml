@@ -5,6 +5,7 @@ members = [
   "dynamic-constructor-di",
   "static-constructor-di",
   "cake-pattern-di",
+  "cake-pattern-di_practice", "function-di", "reader-di", "shaku-di",
 ]
 resolver = "2"
 

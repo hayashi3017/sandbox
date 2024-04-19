@@ -1,26 +1,18 @@
-use std::sync::Arc;
-
 use anyhow::Result;
 use common::User;
 
-pub struct UserService {
-    repository: Arc<dyn UserRepository>,
-}
+pub mod service {
+    use super::*;
 
-impl UserService {
-    pub fn new(repository: Arc<dyn UserRepository>) -> UserService {
-        UserService { repository }
+    pub fn find_user<R: UserRepository>(id: String, repository: &R) -> Result<Option<User>> {
+        repository.find_user(id)
     }
 
-    pub fn find_user(&self, id: String) -> Result<Option<User>> {
-        self.repository.find_user(id)
-    }
-
-    pub fn deactivate_user(&self, id: String) -> Result<()> {
-        let user = self.repository.find_user(id)?;
+    pub fn deactivate_user<R: UserRepository>(id: String, repository: &R) -> Result<()> {
+        let user = repository.find_user(id)?;
         if let Some(mut user) = user {
             user.effective = false;
-            self.repository.update(user)?;
+            repository.update(user)?;
         };
         Ok(())
     }
@@ -48,7 +40,7 @@ impl UserRepository for UserRepositoryImpl {
     }
 
     fn update(&self, user: User) -> Result<()> {
-        let user = self.find_user(user.id)?;
+        let user = self.database.find_user(user.id)?;
         if let Some(mut user) = user {
             user.effective = false;
             self.database.update(user)?;
@@ -73,28 +65,30 @@ impl Database {
 }
 
 pub struct AppModule {
-    user_service: UserService,
+    user_repository: UserRepositoryImpl,
 }
 
 impl AppModule {
     pub fn new() -> AppModule {
         let database = Database;
-        let user_service = UserService::new(Arc::new(UserRepositoryImpl::new(database)));
+        let user_repository = UserRepositoryImpl::new(database);
 
-        AppModule { user_service }
+        AppModule { user_repository }
     }
 
-    pub fn user_service(&self) -> &UserService {
-        &self.user_service
+    pub fn user_repository(&self) -> &UserRepositoryImpl {
+        &self.user_repository
     }
 }
 
 pub mod router {
     use actix_web::{get, web::Data, web::Path, HttpResponse};
 
+    use crate::service;
+
     #[get("/users/{id}")]
     pub async fn find_user(id: Path<String>, app_module: Data<crate::AppModule>) -> HttpResponse {
-        let user = app_module.user_service.find_user(id.into_inner());
+        let user = service::find_user(id.into_inner(), app_module.user_repository());
         match user {
             Ok(Some(user)) => HttpResponse::Ok().json(user),
             Ok(None) => HttpResponse::NotFound().finish(),
