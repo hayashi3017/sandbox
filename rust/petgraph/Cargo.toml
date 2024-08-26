@@ -1,0 +1,6 @@
+[workspace]
+workspace.resolver = "2"
+members = [ "algo"]
+
+[workspace.dependencies]
+petgraph = "0.6.5"
