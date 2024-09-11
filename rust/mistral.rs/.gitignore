@@ -1,0 +1,11 @@
+/target
+
+*/target
+
+.venv
+
+# llm model
+ELYZA-japanese-Llama-2-7b-instruct-q4_K_M.gguf
+special_tokens_map.json
+tokenizer_config.json
+tokenizer.json

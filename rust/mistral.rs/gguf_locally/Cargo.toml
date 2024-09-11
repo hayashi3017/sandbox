@@ -1,0 +1,11 @@
+[package]
+name = "gguf_locally"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+mistralrs.workspace = true
+anyhow.workspace = true
+tokio.workspace = true
+indexmap.workspace = true
+either.workspace = true

@@ -1,0 +1,10 @@
+[workspace]
+workspace.resolver = "2"
+members = ["gguf_locally"]
+
+[workspace.dependencies]
+mistralrs = { git = "https://github.com/EricLBuehler/mistral.rs.git" }
+either = { version = "1.10.0", features = ["serde"] }
+indexmap = { version = "2.2.5", features = ["serde"] }
+tokio = { version = "1.36.0", features = ["full", "rt-multi-thread"] }
+anyhow = "1.0.80"
