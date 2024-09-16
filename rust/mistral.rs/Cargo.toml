@@ -1,10 +1,19 @@
 [workspace]
 workspace.resolver = "2"
-members = ["gguf_locally"]
+members = ["gguf_locally", "isq"]
 
 [workspace.dependencies]
-mistralrs = { git = "https://github.com/EricLBuehler/mistral.rs.git" }
+mistralrs = { git = "https://github.com/EricLBuehler/mistral.rs.git", features = ["cuda"]}
 either = { version = "1.10.0", features = ["serde"] }
 indexmap = { version = "2.2.5", features = ["serde"] }
 tokio = { version = "1.36.0", features = ["full", "rt-multi-thread"] }
 anyhow = "1.0.80"
+axum = { version = "0.7.4", features = ["tokio"] }
+tower-http = { version = "0.5.1", features = ["cors"]}
+serde = "1.0.197"
+serde_json = "1.0.114"
+image = { version = "0.25.1", default-features = false, features = ['bmp', 'dds', 'exr', 'ff', 'gif', 'hdr', 'ico', 'jpeg', 'png', 'pnm', 'qoi', 'tga', 'tiff', 'webp']}
+reqwest = { version = "0.12.4", features = ["blocking"] }
+url = "2.5.2"
+data-url = "0.3.1"
+futures = "0.3"

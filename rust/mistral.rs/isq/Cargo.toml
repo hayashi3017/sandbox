@@ -1,0 +1,20 @@
+[package]
+name = "isq"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+mistralrs.workspace = true
+anyhow.workspace = true
+tokio.workspace = true
+indexmap.workspace = true
+either.workspace = true
+axum.workspace = true
+tower-http.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+reqwest.workspace = true
+image.workspace = true
+url.workspace = true
+data-url.workspace = true
+futures.workspace = true
