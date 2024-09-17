@@ -54,7 +54,7 @@ async fn setup() -> anyhow::Result<Arc<MistralRs>> {
         },
         None,
         None,
-        Some("mistralai/Mistral-7B-Instruct-v0.1".to_string()),
+        Some("elyza/ELYZA-japanese-Llama-2-7b-instruct".to_string()),
     )
     .build(None)?;
     // Load, into a Pipeline
@@ -71,7 +71,7 @@ async fn setup() -> anyhow::Result<Arc<MistralRs>> {
         &best_device()?,
         false,
         DeviceMapMetadata::dummy(),
-        Some(IsqType::Q2K), // In-situ quantize the model into q4k
+        Some(IsqType::Q4K), // In-situ quantize the model into q4k
         cache_config,       // No PagedAttention.
     )?;
     println!("Model loaded.");

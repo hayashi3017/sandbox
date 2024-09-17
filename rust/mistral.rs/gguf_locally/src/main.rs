@@ -1,12 +1,10 @@
 use either::Either;
 use indexmap::IndexMap;
-use std::sync::Arc;
+use std::{num::NonZero, sync::Arc};
 use tokio::sync::mpsc::channel;
 
 use mistralrs::{
-    Constraint, DefaultSchedulerMethod, Device, DeviceMapMetadata, GGUFLoaderBuilder,
-    GGUFSpecificConfig, MistralRs, MistralRsBuilder, ModelDType, NormalRequest, Request,
-    RequestMessage, ResponseOk, Result, SamplingParams, SchedulerConfig, TokenSource,
+    Constraint, DefaultSchedulerMethod, Device, DeviceMapMetadata, GGUFLoaderBuilder, GGUFSpecificConfig, MemoryGpuConfig, MistralRs, MistralRsBuilder, ModelDType, NormalRequest, PagedAttentionConfig, Request, RequestMessage, ResponseOk, Result, SamplingParams, SchedulerConfig, TokenSource
 };
 
 /// Gets the best device, cpu, cuda if compiled with CUDA
@@ -21,7 +19,7 @@ pub(crate) fn best_device() -> Result<Device> {
     }
 }
 
-fn setup() -> anyhow::Result<Arc<MistralRs>> {
+async fn setup() -> anyhow::Result<Arc<MistralRs>> {
     // Select a Mistral model
     // We do not use any files from HF servers here, and instead load the
     // chat template from the specified file, and the tokenizer and model from a
@@ -31,10 +29,13 @@ fn setup() -> anyhow::Result<Arc<MistralRs>> {
         // tokenizer_config.jsonはget_tokenizers_json.pyによって取得できた
         // tokenizer_config.jsonからchat_templateに変換する？必要があるのか、方法が不明。どちらも別々に必要そうだが、HFにはない
         // https://huggingface.co/elyza/ELYZA-japanese-Llama-2-7b-instruct
-        // うーん。そもそもの知識がなければこのあたりの応用ができない。手詰まり感。
-        // Some("chat_templates/mistral.json".to_string()),
-        Some("chat_templates/llama2.json".to_string()),
+        // おそらくエラーが起こらないようなJIJAテンプレートを定義する必要がある、mistral.jsonは上手くいくパターン
+        Some("chat_templates/mistral.json".to_string()),
+        // Some("chat_templates/llama2.json".to_string()),
+        // Some("chat_templates/chatml.json".to_string()),
+        // Some("chat_templates/default.json".to_string()),
         // Some("tokenizer_config.json".to_string()),
+        // None,
         Some("elyza/ELYZA-japanese-Llama-2-7b-instruct".to_string()),
         "mmnga/ELYZA-japanese-Llama-2-7b-instruct-gguf".to_string(),
         vec!["ELYZA-japanese-Llama-2-7b-instruct-q4_K_M.gguf".to_string()],
@@ -44,6 +45,11 @@ fn setup() -> anyhow::Result<Arc<MistralRs>> {
         },
     )
     .build();
+    let cache_config = Some(PagedAttentionConfig::new(
+        Some(32),
+        512,
+        MemoryGpuConfig::Utilization(0.9), // NOTE(EricLBuehler): default is to use 90% of memory
+    )?);
     // Load, into a Pipeline
     let pipeline = loader.load_model_from_hf(
         None,
@@ -53,26 +59,38 @@ fn setup() -> anyhow::Result<Arc<MistralRs>> {
         false,
         DeviceMapMetadata::dummy(),
         None,
-        None, // No PagedAttention.
+        cache_config, // No PagedAttention.
     )?;
-    // Create the MistralRs, which is a runner
-    Ok(MistralRsBuilder::new(
-        pipeline,
+    let scheduler_config = if cache_config.is_some() {
+        // Handle case where we may have device mapping
+        if let Some(ref cache_config) = pipeline.lock().await.get_metadata().cache_config {
+            SchedulerConfig::PagedAttentionMeta {
+                max_num_seqs: 16,
+                config: cache_config.clone(),
+            }
+        } else {
+            SchedulerConfig::DefaultScheduler {
+                method: DefaultSchedulerMethod::Fixed(NonZero::new(16).unwrap()),
+            }
+        }
+    } else {
         SchedulerConfig::DefaultScheduler {
-            method: DefaultSchedulerMethod::Fixed(5.try_into().unwrap()),
-        },
-    )
-    .build())
+            method: DefaultSchedulerMethod::Fixed(NonZero::new(16).unwrap()),
+        }
+    };
+    // Create the MistralRs, which is a runner
+    Ok(MistralRsBuilder::new(pipeline, scheduler_config).build())
 }
 
-fn main() -> anyhow::Result<()> {
-    let mistralrs = setup()?;
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let mistralrs = setup().await?;
 
     let (tx, mut rx) = channel(10_000);
     let request = Request::Normal(NormalRequest {
         messages: RequestMessage::Chat(vec![IndexMap::from([
             ("role".to_string(), Either::Left("user".to_string())),
-            ("content".to_string(), Either::Left("Hello!".to_string())),
+            ("content".to_string(), Either::Left("日本の伝統料理について教えて".to_string())),
         ])]),
         sampling_params: SamplingParams::default(),
         response: tx,
@@ -86,9 +104,9 @@ fn main() -> anyhow::Result<()> {
         tool_choice: None,
         logits_processors: None,
     });
-    mistralrs.get_sender()?.blocking_send(request)?;
+    mistralrs.get_sender()?.send(request).await?;
 
-    let response = rx.blocking_recv().unwrap().as_result().unwrap();
+    let response = rx.recv().await.unwrap().as_result().unwrap();
     match response {
         ResponseOk::Done(c) => println!(
             "Text: {}, Prompt T/s: {}, Completion T/s: {}",
