@@ -1,6 +1,5 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import App from "./App.tsx";
 import "./index.css";
 import {
   createBrowserRouter,
@@ -8,13 +7,16 @@ import {
   Route,
   createRoutesFromElements,
 } from "react-router-dom";
-import Button from "./Button.tsx";
+import ButtonPage from "./pages/Button/ButtonPage.tsx";
+import AppPage from "./pages/App/AppPage.tsx";
+import ErrorPage from "./pages/Error/ErrorPage.tsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<App />}>
-      <Route path="button" element={<Button />} />
-    </Route>
+    <>
+      <Route path="/" element={<AppPage />} errorElement={<ErrorPage />} />
+      <Route path="button" element={<ButtonPage />} />
+    </>
   )
 );
 
