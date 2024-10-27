@@ -10,12 +10,14 @@ import {
 import ButtonPage from "./pages/Button/ButtonPage.tsx";
 import AppPage from "./pages/App/AppPage.tsx";
 import ErrorPage from "./pages/Error/ErrorPage.tsx";
+import ScriptPage from "./pages/Script/ScriptPage.tsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path="/" element={<AppPage />} errorElement={<ErrorPage />} />
       <Route path="button" element={<ButtonPage />} />
+      <Route path="script_sync_example" element={<ScriptPage />} />
     </>
   )
 );

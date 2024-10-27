@@ -13,6 +13,9 @@ function AppPage() {
           <li>
             <a href="/button">Button</a>
           </li>
+          <li>
+            <a href="/script_sync_example">Script</a>
+          </li>
         </ul>
       </div>
     </>
