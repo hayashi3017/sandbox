@@ -1,25 +1,21 @@
-"use client";
-
 import CommonButton from "@/components/button/CommonButton";
-import { useAsyncRoutePush } from "@/components/useAsyncRoutePush";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 export default function ButtonPage() {
   const router = useRouter();
   const [disabled, setDisabled] = useState(false);
-  // const asyncPush = useAsyncRoutePush();
 
   async function getItems() {
-    const response = await fetch("/items");
+    const response = await fetch("/api/hello");
     const data = await response.json();
     console.log(data);
     return data;
   }
 
+  // Next.js v12の場合、この書き方ではrouter.push()を完全にawaitできなかったが、現在はできるように修正されている模様
   async function redirectTopPage() {
     await router.push("/");
-    // await asyncPush("/");
   }
 
   async function innerOnClick() {
