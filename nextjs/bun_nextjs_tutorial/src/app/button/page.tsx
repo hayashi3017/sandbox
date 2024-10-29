@@ -2,13 +2,13 @@
 
 import CommonButton from "@/components/button/CommonButton";
 import { useAsyncRoutePush } from "@/components/useAsyncRoutePush";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function ButtonPage() {
-  const router = useRouter();
+  // const router = useRouter();
   const [disabled, setDisabled] = useState(false);
-  // const asyncPush = useAsyncRoutePush();
+  const asyncPush = useAsyncRoutePush();
 
   async function getItems() {
     const response = await fetch("/items");
@@ -18,8 +18,7 @@ export default function ButtonPage() {
   }
 
   async function redirectTopPage() {
-    await router.push("/");
-    // await asyncPush("/");
+    await asyncPush("/");
   }
 
   async function innerOnClick() {
