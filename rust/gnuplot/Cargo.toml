@@ -1,0 +1,6 @@
+[workspace]
+resolver = "2"
+members = ["tutorial"]
+
+[workspace.dependencies]
+gnuplot = "0.0.44"
