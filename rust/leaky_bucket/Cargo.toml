@@ -1,0 +1,7 @@
+[workspace]
+resolver = "2"
+members = ["", "tutorial"]
+
+[workspace.dependencies]
+tokio ={ version = "1.42.0" , features = ["full"]}
+leaky-bucket = "1.1.2"
