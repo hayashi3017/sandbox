@@ -8,3 +8,5 @@ leaky-bucket = "1.1.2"
 axum = "0.7.9"
 pin-project = "1.1.7"
 futures = "0.3.31"
+tracing = "0.1.41"
+tracing-subscriber = {version = "0.3.19", features = ["env-filter"]}
