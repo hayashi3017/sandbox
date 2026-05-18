@@ -1,0 +1,15 @@
+[package]
+name = "rust-unsafe-learning"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+libc = "0.2"
+
+[lib]
+name = "rust_unsafe"
+path = "src/lib.rs"
+
+[[bin]]
+name = "demo"
+path = "src/main.rs"
