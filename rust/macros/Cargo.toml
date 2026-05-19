@@ -1,0 +1,3 @@
+[workspace]
+members = ["learning", "macros_impl"]
+resolver = "2"
